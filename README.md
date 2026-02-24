@@ -38,3 +38,12 @@ bun -e "import logger from './logger.ts'; logger.info('Logger works!');"
 ```bash
 cat logs/combined.log
 ```
+
+#### Test Error Classes
+```bash
+bun -e "
+import { NotFoundError } from './errors.ts';
+try { throw new NotFoundError('Quiz'); }
+catch(e) { console.log(e.message, 'Status:', e.statusCode); }
+"
+```
