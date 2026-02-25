@@ -22,6 +22,30 @@ This project was created using `bun init` in bun v1.3.6. [Bun](https://bun.com) 
 
 ---
 
+## Backend Server Commands
+
+To start the backend Fastify server in watch mode:
+
+```bash
+bun --watch index.ts
+```
+
+To verify the backend server is running and connected to the database:
+
+```bash
+curl http://localhost:3000/health
+```
+
+Expected output: `{"status":"ok","db":"connected"}`
+
+To access the API documentation (Swagger UI) in your browser:
+
+```
+http://localhost:3000/docs
+```
+
+---
+
 ## Testing Commands
 
 Here are some commands to quickly verify core functionalities:
