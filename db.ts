@@ -34,9 +34,9 @@ export const getDb = () => { // This function returns the connected database ins
 };
 
 export const collections = {
-  get users() { return getDb().collection('users'); }, // This creates a users collection in the database
-  get quizzes() { return getDb().collection('quizzes'); }, // This creates a quizzes collection in the database
-  get questions() { return getDb().collection('questions'); }, // This creates a questions collection in the database
   get attempts() { return getDb().collection('attempts'); }, // This creates an attempts collection in the database
   get notes() { return getDb().collection('notes'); }, // This creates a notes collection in the database
+  get questions() { return getDb().collection('questions'); }, // This creates a questions collection in the database
+  get quizzes() { return getDb().collection('quizzes'); }, // This creates a quizzes collection in the database
+  get users() { return getDb().collection('users'); }, // This creates a users collection in the database
 };

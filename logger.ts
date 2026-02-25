@@ -2,11 +2,11 @@
 import winston from 'winston';
 
 const logger = winston.createLogger({ // What is this? Logger configuration using the winston library. It sets the logging level, format, and transports (where logs are stored).
-  level: 'info', // The minimum level of messages that will be logged. In this case, it will log 'info' and above (like 'error').
   format: winston.format.combine( 
     winston.format.timestamp(),
     winston.format.json()
   ),
+  level: 'info', // The minimum level of messages that will be logged. In this case, it will log 'info' and above (like 'error').
   transports: [
     new winston.transports.File({ filename: 'logs/error.log', level: 'error' }), // This transport logs error messages to a file named 'error.log' in the 'logs' directory.
     new winston.transports.File({ filename: 'logs/combined.log' }), // This transport logs all messages (including 'info' and above) to a file named 'combined.log' in the 'logs' directory.

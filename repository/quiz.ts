@@ -4,15 +4,15 @@ import type { QuizDoc, QuestionDoc } from '../types/db.ts';
 import { ObjectId } from 'mongodb';
 
 export const quizRepository = {
+  async create(quiz: QuizDoc) {
+    const result = await collections.quizzes.insertOne(quiz);
+    return { ...quiz, _id: result.insertedId };
+  },
   async findAll() {
     return await collections.quizzes.find<QuizDoc>({ is_public: true }).toArray();
   },
   async findById(id: string) {
     return await collections.quizzes.findOne<QuizDoc>({ _id: new ObjectId(id) });
-  },
-  async create(quiz: QuizDoc) {
-    const result = await collections.quizzes.insertOne(quiz);
-    return { ...quiz, _id: result.insertedId };
   },
   async findQuestionsByQuizId(quizId: string) {
     return await collections.questions.find<QuestionDoc>({ quizId: new ObjectId(quizId) }).toArray();

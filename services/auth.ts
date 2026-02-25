@@ -5,25 +5,25 @@ import { ConflictError, UnauthorizedError } from '../errors.ts';
 import type { RegisterBody, LoginBody } from '../types/http.ts';
 
 export const authService = {
-  async register(data: RegisterBody) {
-    const existing = await userRepository.findByEmail(data.email);
-    if (existing) throw new ConflictError('Email already registered');
-
-    const hashedPassword = await hashPassword(data.password);
-    return await userRepository.create({
-      username: data.username,
-      email: data.email,
-      passwordHash: hashedPassword,
-      role: 'user',
-      createdAt: new Date()
-    });
-  },
-
   async login(data: LoginBody) {
     const user = await userRepository.findByEmail(data.email);
     if (!user || !(await comparePassword(data.password, user.passwordHash))) {
       throw new UnauthorizedError('Invalid email or password');
     }
     return user;
+  },
+
+  async register(data: RegisterBody) {
+    const existing = await userRepository.findByEmail(data.email);
+    if (existing) throw new ConflictError('Email already registered');
+
+    const hashedPassword = await hashPassword(data.password);
+    return await userRepository.create({
+      createdAt: new Date(),
+      email: data.email,
+      passwordHash: hashedPassword,
+      role: 'user',
+      username: data.username
+    });
   }
 };

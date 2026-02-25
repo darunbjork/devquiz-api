@@ -1,3 +1,4 @@
+// Step 12: Define the application routes in routes.ts, mapping HTTP endpoints to their corresponding controller methods. This file serves as the central routing configuration for the application, organizing the various API endpoints and their associated handlers. Each route is defined with its HTTP method, URL path, and any necessary pre-handlers (such as authentication) or validation schemas. By structuring the routes in this way, we ensure a clear and maintainable organization of the application's API endpoints, making it easier to manage and extend the functionality of the quiz application as needed.
 import type { FastifyInstance, FastifySchema } from 'fastify';
 import { authController } from './controllers/auth.ts';
 import { quizController } from './controllers/quiz.ts';
@@ -7,45 +8,45 @@ import { noteController } from './controllers/notes.ts';
 // Define schemas directly in routes.ts for simplicity
 const registerSchema: FastifySchema = {
   body: {
-    type: 'object',
-    required: ['username', 'email', 'password'],
     properties: {
-      username: { type: 'string' },
-      email: { type: 'string', format: 'email' },
+      email: { format: 'email', type: 'string' },
       password: { type: 'string' },
-      role: { type: 'string', enum: ['user', 'admin'], default: 'user' },
+      role: { default: 'user', enum: ['user', 'admin'], type: 'string' },
+      username: { type: 'string' },
     },
+    required: ['username', 'email', 'password'],
+    type: 'object',
   },
 };
 
 const loginSchema: FastifySchema = {
   body: {
-    type: 'object',
-    required: ['email', 'password'],
     properties: {
-      email: { type: 'string', format: 'email' },
+      email: { format: 'email', type: 'string' },
       password: { type: 'string' },
     },
+    required: ['email', 'password'],
+    type: 'object',
   },
 };
 
 const startAttemptSchema: FastifySchema = {
   body: {
-    type: 'object',
-    required: ['quizId'],
     properties: {
       quizId: { type: 'string' },
     },
+    required: ['quizId'],
+    type: 'object',
   },
 };
 
 const getNotesSchema: FastifySchema = {
   params: {
-    type: 'object',
-    required: ['quizId'],
     properties: {
       quizId: { type: 'string' },
     },
+    required: ['quizId'],
+    type: 'object',
   },
 };
 
@@ -66,5 +67,5 @@ export default async function routes(fastify: FastifyInstance) {
   fastify.get('/api/notes/:quizId', { preHandler: [fastify.authenticate], schema: getNotesSchema }, noteController.getNotes);
 
   // --- Health Check ---
-  fastify.get('/health', async () => ({ status: 'ok', db: 'connected' }));
+  fastify.get('/health', async () => ({ db: 'connected', status: 'ok' }));
 }

@@ -10,10 +10,10 @@ export const attemptService = {
     if (!quiz) throw new NotFoundError('Quiz');
 
     return await attemptRepository.create({
-      userId: new ObjectId(userId),
       quizId: new ObjectId(quizId),
       startTime: new Date(),
-      status: 'in_progress'
+      status: 'in_progress',
+      userId: new ObjectId(userId)
     });
   }
 };
