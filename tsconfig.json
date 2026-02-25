@@ -20,8 +20,8 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
-
-    "baseUrl": ".",
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
     "paths": {
       "@/*": ["./src/*"]
     },
