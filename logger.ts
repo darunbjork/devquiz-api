@@ -1,8 +1,8 @@
 import winston from 'winston';
 
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.combine(
+const logger = winston.createLogger({ // What is this? Logger configuration using the winston library. It sets the logging level, format, and transports (where logs are stored).
+  level: 'info', // The minimum level of messages that will be logged. In this case, it will log 'info' and above (like 'error').
+  format: winston.format.combine( 
     winston.format.timestamp(),
     winston.format.json()
   ),

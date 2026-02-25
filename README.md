@@ -47,3 +47,22 @@ try { throw new NotFoundError('Quiz'); }
 catch(e) { console.log(e.message, 'Status:', e.statusCode); }
 "
 ```
+
+#### Test Database Connection
+
+To start MongoDB with Docker:
+
+```bash
+docker run -d --name devquiz-mongo -p 27017:27017 mongo:7
+```
+
+To test the DB connection:
+
+```bash
+bun -e "
+import { connectMongo } from './db.ts';
+await connectMongo();
+console.log('MongoDB connection verified! 🚀');
+process.exit(0);
+"
+```
