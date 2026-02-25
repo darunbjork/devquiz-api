@@ -1,3 +1,4 @@
+//  Step 1: Import the winston library, which is a popular logging library for Node.js applications. It provides a flexible and configurable way to log messages in various formats and transports (like files, console, etc.).
 import winston from 'winston';
 
 const logger = winston.createLogger({ // What is this? Logger configuration using the winston library. It sets the logging level, format, and transports (where logs are stored).
@@ -7,8 +8,8 @@ const logger = winston.createLogger({ // What is this? Logger configuration usin
     winston.format.json()
   ),
   transports: [
-    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'logs/combined.log' }),
+    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }), // This transport logs error messages to a file named 'error.log' in the 'logs' directory.
+    new winston.transports.File({ filename: 'logs/combined.log' }), // This transport logs all messages (including 'info' and above) to a file named 'combined.log' in the 'logs' directory.
   ],
 });
 

@@ -81,7 +81,7 @@ console.log('Password Mismatched (expected false):', isMismatched);
 "
 ```
 # or
-
+```bash
 bun -e '
 import { hashPassword, verifyPassword } from "./utils/password.ts";
 const testPassword = "mysecretpassword";

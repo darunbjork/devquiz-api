@@ -1,3 +1,4 @@
+// Step 6: This file is responsible for setting up the connection to the MongoDB database using the MongoClient from the 'mongodb' library. It defines functions to connect to the database and retrieve the database instance, as well as an object that provides access to specific collections (users, quizzes, questions, attempts, notes) in the database. The connection URL is read from an environment variable (MONGODB_URL), and if it is not set, a default URL is used. The file also includes error handling for connection issues and logs relevant messages using a logger.
 import { MongoClient, Db } from 'mongodb';
 import logger from './logger.ts';
 

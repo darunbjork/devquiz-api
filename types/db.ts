@@ -1,3 +1,4 @@
+// Step 2: Define TypeScript interfaces for the MongoDB documents used in the application. These interfaces represent the structure of the data stored in the database, such as users, quizzes, and questions. Each interface includes fields that correspond to the properties of the respective documents, along with their types. The ObjectId type from MongoDB is used for fields that reference other documents or serve as unique identifiers.
 import { ObjectId } from 'mongodb';
 
 export interface UserDoc {
