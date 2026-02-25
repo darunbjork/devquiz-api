@@ -66,3 +66,30 @@ console.log('MongoDB connection verified! 🚀');
 process.exit(0);
 "
 ```
+
+#### Test Password Utilities
+```bash
+bun -e "
+import { hashPassword, verifyPassword } from './utils/password.ts';
+const testPassword = 'mysecretpassword';
+const hashedPassword = await hashPassword(testPassword);
+console.log('Hashed Password:', hashedPassword);
+const isMatch = await verifyPassword(hashedPassword, testPassword);
+console.log('Password Verified:', isMatch);
+const isMismatched = await verifyPassword(hashedPassword, 'wrongpassword');
+console.log('Password Mismatched (expected false):', isMismatched);
+"
+```
+# or
+
+bun -e '
+import { hashPassword, verifyPassword } from "./utils/password.ts";
+const testPassword = "mysecretpassword";
+const hashedPassword = await hashPassword(testPassword);
+console.log("Hashed Password:", hashedPassword);
+const isMatch = await verifyPassword(hashedPassword, testPassword);
+console.log("Password Verified:", isMatch);
+const isMismatched = await verifyPassword(hashedPassword, "wrongpassword");
+console.log("Password Mismatched (expected false):", isMismatched);
+'
+```
