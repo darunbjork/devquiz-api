@@ -46,6 +46,22 @@ http://localhost:3000/docs
 
 ---
 
+## ESLint Commands
+
+To run ESLint to check for code quality and style issues:
+
+```bash
+bun eslint .
+```
+
+To run ESLint and automatically fix fixable issues:
+
+```bash
+bun eslint . --fix
+```
+
+---
+
 ## Testing Commands
 
 Here are some commands to quickly verify core functionalities:
