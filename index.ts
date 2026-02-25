@@ -1,0 +1,53 @@
+import Fastify from 'fastify';
+import cors from '@fastify/cors';
+import swagger from '@fastify/swagger';
+import swaggerUi from '@fastify/swagger-ui';
+import { connectMongo } from './db.ts';
+import authPlugin from './auth.ts';
+import routes from './routes.ts';
+import logger from './logger.ts';
+import { AppError } from './errors.ts';
+
+const fastify = Fastify({ logger: false });
+
+const start = async () => {
+  try {
+    // 1. Connect Database
+    await connectMongo();
+
+    // 2. Register CORS
+    await fastify.register(cors, { 
+      origin: process.env.FRONTEND_URL || 'http://localhost:5173' 
+    });
+
+    // 3. Register Auth & Swagger
+    await fastify.register(authPlugin);
+    await fastify.register(swagger, {
+      openapi: { info: { title: 'DevQuiz API', version: '1.0.0' } }
+    });
+    await fastify.register(swaggerUi, { routePrefix: '/docs' });
+
+    // 4. Register Routes
+    await fastify.register(routes);
+
+    // 5. Global Error Handler
+    fastify.setErrorHandler((error, _request, reply) => {
+      if (error instanceof AppError) {
+        return reply.status(error.statusCode).send({ message: error.message });
+      }
+      logger.error(error);
+      return reply.status(500).send({ message: 'Internal Server Error' });
+    });
+
+    // 6. Start Listening
+    const port = Number(process.env.PORT) || 3000;
+    await fastify.listen({ port, host: '0.0.0.0' });
+    console.log(`🚀 Server ready at http://localhost:${port}`);
+    console.log(`📖 Docs available at http://localhost:${port}/docs`);
+  } catch (err) {
+    logger.error(err);
+    process.exit(1);
+  }
+};
+
+start();
