@@ -10,7 +10,7 @@ export const hashPassword = async (password: string) => {
   return `${buf.toString('hex')}.${salt}`;
 };
 
-export const verifyPassword = async (storedHash: string, suppliedPassword: string) => {
+export const comparePassword = async (storedHash: string, suppliedPassword: string) => {
   const [hashed, salt] = storedHash.split('.'); // This splits the stored hash string into two parts: the hashed password and the salt, using the period (.) as a delimiter. The hashed password is the first part (before the period), and the salt is the second part (after the period). This allows us to retrieve both components needed for verifying the supplied password.
 
   if (!hashed || !salt) {
@@ -20,3 +20,4 @@ export const verifyPassword = async (storedHash: string, suppliedPassword: strin
   const buf = (await scryptAsync(suppliedPassword, salt, 64)) as Buffer;
   return buf.toString('hex') === hashed;
 };
+
