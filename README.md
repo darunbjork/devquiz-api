@@ -1,5 +1,9 @@
 # bun-react-template
 
+
+The Swagger UI screenshot
+<img width="2880" height="10297" alt="SCR-20260225-sdht" src="https://github.com/user-attachments/assets/d47ad9a3-aa51-41ac-91ab-1c746f0605af" />
+
 To install dependencies:
 
 ```bash
