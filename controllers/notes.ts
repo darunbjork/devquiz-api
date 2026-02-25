@@ -3,9 +3,15 @@ import type { FastifyRequest, FastifyReply } from 'fastify';
 import { noteService } from '../services/notes.ts';
 import type { JWTPayload } from '../types/auth.ts';
 
+// Define the interface for the request params
+interface GetNotesRequestParams {
+  quizId: string;
+}
+
 export const noteController = {
-  async getNotes(req: FastifyRequest<{ Params: { quizId: string } }>, reply: FastifyReply) {
+  async getNotes(req: FastifyRequest, _reply: FastifyReply) { // Removed { Params: { quizId: string } }
     const user = req.user as JWTPayload;
-    return await noteService.getNotes(user.sub, req.params.quizId);
+    const { quizId } = req.params as GetNotesRequestParams; // Added type assertion
+    return await noteService.getNotes(user.sub, quizId);
   }
 };

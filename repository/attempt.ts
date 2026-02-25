@@ -3,7 +3,7 @@ import { collections } from '../db.ts';
 import { ObjectId } from 'mongodb';
 
 export const attemptRepository = {
-  async create(attempt: any) {
+  async create(attempt: Omit<AttemptDoc, '_id'>) {
     const result = await collections.attempts.insertOne(attempt);
     return { ...attempt, _id: result.insertedId };
   },

@@ -27,3 +27,28 @@ export interface QuestionDoc {
   type: 'multiple_choice' | 'boolean';
   points: number;
 }
+
+export interface AttemptDoc {
+  _id?: ObjectId;
+  quizId: ObjectId;
+  userId: ObjectId;
+  score?: number;
+  startTime: Date;
+  endTime?: Date;
+  // This could be more specific, but for now, to resolve 'any'
+  answers?: Array<{
+    questionId: ObjectId;
+    selectedOption?: string; // For multiple choice
+    userAnswer?: boolean; // For boolean
+    isCorrect: boolean;
+  }>;
+}
+
+export interface NoteDoc {
+  _id?: ObjectId;
+  quizId: ObjectId;
+  userId: ObjectId;
+  content: string;
+  createdAt: Date;
+}
+

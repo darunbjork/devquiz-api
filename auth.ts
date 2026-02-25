@@ -26,12 +26,13 @@ const authPlugin: FastifyPluginAsync = async (fastify) => {
   // main route handler. It verifies the incoming request's JWT.
   // If the token is invalid or expired, it throws an UnauthorizedError,
   // preventing the route handler from executing.
-  fastify.decorate('authenticate', async (request: FastifyRequest, reply: FastifyReply) => {
+  
+  fastify.decorate('authenticate', async (request: FastifyRequest, _reply: FastifyReply) => {
     try {
       // request.jwtVerify() is provided by the '@fastify/jwt' plugin.
       // It attempts to verify the JWT present in the request headers (e.g., Authorization: Bearer <token>).
       await request.jwtVerify();
-    } catch (err) {
+    } catch {
       // If jwtVerify fails, an error is caught, and an UnauthorizedError is thrown.
       // This immediately stops further processing and sends a 401 Unauthorized response.
       throw new UnauthorizedError('Invalid or expired token');
@@ -42,7 +43,8 @@ const authPlugin: FastifyPluginAsync = async (fastify) => {
   // layer of authorization check for 'admin' roles.
   // It ensures not only that a valid token is present, but also that the
   // authenticated user has an 'admin' role within their JWT payload.
-  fastify.decorate('adminAuthenticate', async (request: FastifyRequest, reply: FastifyReply) => {
+  
+  fastify.decorate('adminAuthenticate', async (request: FastifyRequest, _reply: FastifyReply) => {
     try {
       // First, verify the JWT token like the 'authenticate' decorator.
       await request.jwtVerify();
@@ -53,10 +55,10 @@ const authPlugin: FastifyPluginAsync = async (fastify) => {
       if (payload.role !== 'admin') {
         throw new ForbiddenError('Admin privileges required');
       }
-    } catch (err) {
+    } catch (_err) {
       // If an error occurs, check if it's already a ForbiddenError (from our role check).
       // Otherwise, assume it's an authentication error (e.g., invalid token) and throw UnauthorizedError.
-      throw err instanceof ForbiddenError ? err : new UnauthorizedError();
+      throw _err instanceof ForbiddenError ? _err : new UnauthorizedError();
     }
   });
 };

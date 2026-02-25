@@ -3,9 +3,15 @@ import type { FastifyRequest, FastifyReply } from 'fastify';
 import { attemptService } from '../services/attempt.ts';
 import type { JWTPayload } from '../types/auth.ts';
 
+// Define the interface for the request body based on startAttemptSchema
+interface StartAttemptRequestBody {
+  quizId: string;
+}
+
 export const attemptController = {
-  async start(req: FastifyRequest<{ Body: { quizId: string } }>, reply: FastifyReply) {
+  async start(req: FastifyRequest, _reply: FastifyReply) { // Removed { Body: StartAttemptRequestBody }
     const user = req.user as JWTPayload;
-    return await attemptService.startAttempt(user.sub, req.body.quizId);
+    const { quizId } = req.body as StartAttemptRequestBody; // Added type assertion
+    return await attemptService.startAttempt(user.sub, quizId);
   }
 };

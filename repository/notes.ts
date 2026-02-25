@@ -4,14 +4,14 @@ import { ObjectId } from 'mongodb';
 
 // The noteRepository provides methods to interact with the 'notes' collection in the MongoDB database. It includes a method to find notes based on a specific user and quiz, and a method to create new notes. The 'findByUserAndQuiz' method retrieves all notes that match the given userId and quizId, while the 'create' method inserts a new note document into the collection and returns the created note with its generated _id.
 export const noteRepository = {
-  async findByUserAndQuiz(userId: string, quizId: string) {
-    return await collections.notes.find({ 
-      userId: new ObjectId(userId), 
-      quizId: new ObjectId(quizId) 
-    }).toArray();
-  },
-  async create(note: any) {
+  async create(note: Omit<NoteDoc, '_id' | 'createdAt'>) {
     const result = await collections.notes.insertOne(note);
     return { ...note, _id: result.insertedId };
+  },
+  async findByUserAndQuiz(userId: string, quizId: string) {
+    return await collections.notes.find({ 
+      quizId: new ObjectId(quizId), 
+      userId: new ObjectId(userId) 
+    }).toArray();
   }
 };

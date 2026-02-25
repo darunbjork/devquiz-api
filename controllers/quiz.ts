@@ -2,12 +2,18 @@
 import type { FastifyRequest, FastifyReply } from 'fastify';
 import { quizService } from '../services/quiz.ts';
 
+// Define the interface for the request params
+interface GetQuizByIdRequestParams {
+  id: string;
+}
+
 export const quizController = {
-  async getAll(req: FastifyRequest, reply: FastifyReply) {
+  async getAll(_req: FastifyRequest, _reply: FastifyReply) {
     return await quizService.getAllQuizzes();
   },
 
-  async getById(req: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
-    return await quizService.getQuizById(req.params.id);
+  async getById(req: FastifyRequest, _reply: FastifyReply) { // Removed { Params: { id: string } }
+    const { id } = req.params as GetQuizByIdRequestParams; // Added type assertion
+    return await quizService.getQuizById(id);
   }
 };
