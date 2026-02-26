@@ -35,6 +35,7 @@ export interface AttemptDoc {
   score?: number;
   startTime: Date;
   endTime?: Date;
+  status: 'in_progress' | 'completed';
   // This could be more specific, but for now, to resolve 'any'
   answers?: Array<{
     questionId: ObjectId;
