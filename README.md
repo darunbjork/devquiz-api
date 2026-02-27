@@ -1,5 +1,12 @@
 # bun-react-template
 
+Tests of All Endpoints:
+
+<img width="1440" height="900" alt="Screenshot 2026-02-27 at 16 07 41" src="https://github.com/user-attachments/assets/d79c74f4-8401-407a-b831-1b12b62fd446" />
+<img width="1440" height="900" alt="Screenshot 2026-02-27 at 16 03 19" src="https://github.com/user-attachments/assets/919a0ea6-c25c-4e62-ac10-ebc0f217ff5e" />
+<img width="1440" height="900" alt="Screenshot 2026-02-27 at 16 03 12" src="https://github.com/user-attachments/assets/ff66e046-2abc-45ad-a6e8-43566293c6d0" />
+<img width="1440" height="900" alt="Screenshot 2026-02-27 at 16 03 04" src="https://github.com/user-attachments/assets/66e7d43a-8c82-40e5-93e3-2e57dd44cdff" />
+
 
 The Swagger UI screenshot
 <img width="2880" height="10297" alt="SCR-20260225-sdht" src="https://github.com/user-attachments/assets/d47ad9a3-aa51-41ac-91ab-1c746f0605af" />
