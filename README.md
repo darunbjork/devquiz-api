@@ -48,6 +48,40 @@ To access the API documentation (Swagger UI) in your browser:
 http://localhost:3000/docs
 ```
 
+
+---
+
+## Database Seeding & Docker Commands
+
+To seed the database with an admin user and sample data (requires MongoDB to be running, e.g., via Docker Compose):
+
+```bash
+bun run seed.ts
+```
+
+To build and run the application and a MongoDB instance using Docker Compose:
+(Note: Ensure no local processes are using ports 3000 or 27017 before running this command)
+
+```bash
+docker compose up --build
+```
+
+To test the application's health once running via Docker:
+
+```bash
+curl http://localhost:3000/health
+```
+Expected output: `{"db":"connected","status":"ok"}`
+
+To test admin login with the seeded user (email: `admin@devquiz.com`, password: `admin123`):
+
+```bash
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@devquiz.com","password":"admin123"}'
+```
+Expected output: A JSON object containing `token`, `refreshToken`, and `user` data.
+
 ---
 
 ## ESLint Commands
