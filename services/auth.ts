@@ -7,7 +7,7 @@ import type { RegisterBody, LoginBody } from '../types/http.ts';
 export const authService = {
   async login(data: LoginBody) {
     const user = await userRepository.findByEmail(data.email);
-    if (!user || !(await comparePassword(data.password, user.passwordHash))) {
+    if (!user || !(await comparePassword(user.passwordHash, data.password))) {
       throw new UnauthorizedError('Invalid email or password');
     }
     return user;
