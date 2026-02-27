@@ -14,7 +14,6 @@ const seed = async () => {
     const adminPassword = await hashPassword('admin123');
     const adminResult = await collections.users.insertOne({
       username: 'admin',
-      // eslint-disable-next-line perfectionist/sort-objects
       email: 'admin@devquiz.com',
       passwordHash: adminPassword,
       role: 'admin',
