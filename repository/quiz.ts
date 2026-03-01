@@ -16,5 +16,15 @@ export const quizRepository = {
   },
   async findQuestionsByQuizId(quizId: string) {
     return await collections.questions.find<QuestionDoc>({ quizId: new ObjectId(quizId) }).toArray();
+  },
+  async findByUserId(userId: string) {
+    return await collections.quizzes.find<QuizDoc>({ createdBy: new ObjectId(userId) }).toArray();
+  },
+  async update(id: string, update: Partial<QuizDoc>) {
+    await collections.quizzes.updateOne({ _id: new ObjectId(id) }, { $set: update });
+    return await this.findById(id);
+  },
+  async delete(id: string) {
+    return await collections.quizzes.deleteOne({ _id: new ObjectId(id) });
   }
 };

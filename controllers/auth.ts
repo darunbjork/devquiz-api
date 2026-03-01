@@ -8,20 +8,39 @@ export const authController = {
   async login(req: FastifyRequest<{ Body: LoginBody }>, _reply: FastifyReply) {
     const user = await authService.login(req.body);
     
-    const payload: JWTPayload = { email: user.email, role: user.role, sub: user._id!.toString() };
+    const payload: JWTPayload = { email: user.email, role: user.role, sub: user.id };
     
     const token = await _reply.jwtSign(payload, { expiresIn: '15m' });
     const refreshToken = await _reply.jwtSign(payload, { expiresIn: '7d' });
 
-    return { refreshToken, token, user: { id: user._id, role: user.role, username: user.username } };
+    return {
+      refreshToken,
+      token,
+      user: {
+        id: user.id,
+        role: user.role,
+        settings: user.settings,
+        username: user.username,
+      }
+    };
   },
 
   async profile(req: FastifyRequest, _reply: FastifyReply) {
     return req.user; // Decoded from JWT by the authenticate decorator
   },
 
+  async getMe(req: FastifyRequest, _reply: FastifyReply) {
+    const userId = (req.user as JWTPayload).sub;
+    return await authService.getMe(userId);
+  },
+
+  async updateProfile(req: FastifyRequest<{ Body: { username?: string; settings?: { theme: 'light' | 'dark' } } }>, _reply: FastifyReply) {
+    const userId = (req.user as JWTPayload).sub;
+    return await authService.updateProfile(userId, req.body);
+  },
+
   async register(req: FastifyRequest<{ Body: RegisterBody }>, _reply: FastifyReply) {
     const user = await authService.register(req.body);
-    return _reply.code(201).send({ message: 'User registered successfully', userId: user._id });
+    return _reply.code(201).send({ message: 'User registered successfully', userId: user.id });
   }
 };

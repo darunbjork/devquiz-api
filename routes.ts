@@ -30,12 +30,115 @@ const loginSchema: FastifySchema = {
   },
 };
 
+const updateProfileSchema: FastifySchema = {
+  body: {
+    properties: {
+      settings: {
+        properties: {
+          theme: { enum: ['light', 'dark'], type: 'string' },
+        },
+        type: 'object',
+      },
+      username: { type: 'string' },
+    },
+    type: 'object',
+  },
+};
+
 const startAttemptSchema: FastifySchema = {
   body: {
     properties: {
       quizId: { type: 'string' },
     },
     required: ['quizId'],
+    type: 'object',
+  },
+};
+
+const saveAttemptSchema: FastifySchema = {
+  body: {
+    properties: {
+      answers: {
+        items: {
+          properties: {
+            isCorrect: { type: 'boolean' },
+            questionId: { type: 'string' },
+            selectedOption: { type: 'string' },
+            userAnswer: { type: 'boolean' },
+          },
+          required: ['questionId', 'isCorrect'],
+          type: 'object',
+        },
+        type: 'array',
+      },
+      attemptId: { type: 'string' },
+      quizId: { type: 'string' },
+      score: { type: 'number' },
+      totalQuestions: { type: 'number' },
+    },
+    required: ['quizId', 'score', 'totalQuestions', 'answers'],
+    type: 'object',
+  },
+};
+
+const createQuizSchema: FastifySchema = {
+  body: {
+    properties: {
+      description: { type: 'string' },
+      difficulty: { enum: ['beginner', 'intermediate', 'advanced', 'Beginner', 'Intermediate', 'Advanced'], type: 'string' },
+      questions: {
+        items: {
+          properties: {
+            correctAnswerIndex: { type: 'number' },
+            options: { items: { type: 'string' }, type: 'array' },
+            questionText: { type: 'string' },
+          },
+          required: ['questionText', 'options', 'correctAnswerIndex'],
+          type: 'object',
+        },
+        type: 'array',
+      },
+      title: { type: 'string' },
+      topic: { type: 'string' },
+    },
+    required: ['title', 'description', 'topic', 'difficulty', 'questions'],
+    type: 'object',
+  },
+};
+
+const updateQuizSchema: FastifySchema = {
+  body: {
+    properties: {
+      description: { type: 'string' },
+      difficulty: { enum: ['beginner', 'intermediate', 'advanced', 'Beginner', 'Intermediate', 'Advanced'], type: 'string' },
+      questions: {
+        items: {
+          properties: {
+            correctAnswerIndex: { type: 'number' },
+            options: { items: { type: 'string' }, type: 'array' },
+            questionText: { type: 'string' },
+          },
+          required: ['questionText', 'options', 'correctAnswerIndex'],
+          type: 'object',
+        },
+        type: 'array',
+      },
+      title: { type: 'string' },
+      topic: { type: 'string' },
+    },
+    type: 'object',
+  },
+};
+
+const generateQuizSchema: FastifySchema = {
+  body: {
+    properties: {
+      difficulty: { type: 'string' },
+      numQuestions: { type: 'number' },
+      studyNote: { type: 'string' },
+      topic: { type: 'string' },
+    },
+    required: ['topic', 'difficulty', 'numQuestions', 'studyNote'],
     type: 'object',
   },
 };
@@ -50,18 +153,38 @@ const getNotesSchema: FastifySchema = {
   },
 };
 
+const getByIdSchema: FastifySchema = {
+  params: {
+    properties: {
+      id: { type: 'string' },
+    },
+    required: ['id'],
+    type: 'object',
+  },
+};
+
 export default async function routes(fastify: FastifyInstance) {
   // --- Auth Routes ---
   fastify.post('/api/auth/register', { schema: registerSchema }, authController.register);
   fastify.post('/api/auth/login', { schema: loginSchema }, authController.login);
   fastify.get('/api/auth/profile', { preHandler: [fastify.authenticate] }, authController.profile);
+  fastify.get('/api/auth/me', { preHandler: [fastify.authenticate] }, authController.getMe);
+  fastify.patch('/api/auth/profile', { preHandler: [fastify.authenticate], schema: updateProfileSchema }, authController.updateProfile);
 
   // --- Quiz Routes ---
   fastify.get('/api/quizzes', quizController.getAll);
-  fastify.get('/api/quizzes/:id', { schema: getNotesSchema }, quizController.getById); // Reusing getNotesSchema for quiz ID
+  fastify.get('/api/quizzes/my', { preHandler: [fastify.authenticate] }, quizController.getMyQuizzes);
+  fastify.get('/api/quizzes/:id', { schema: getByIdSchema }, quizController.getById);
+  fastify.post('/api/quizzes', { preHandler: [fastify.authenticate], schema: createQuizSchema }, quizController.create);
+  fastify.patch('/api/quizzes/:id', { preHandler: [fastify.authenticate], schema: updateQuizSchema }, quizController.update);
+  fastify.delete('/api/quizzes/:id', { preHandler: [fastify.authenticate], schema: getByIdSchema }, quizController.delete);
+  fastify.post('/api/quizzes/generate', { preHandler: [fastify.authenticate], schema: generateQuizSchema }, quizController.generateQuiz);
 
   // --- Attempt Routes ---
   fastify.post('/api/attempts/start', { preHandler: [fastify.authenticate], schema: startAttemptSchema }, attemptController.start);
+  fastify.post('/api/attempts', { preHandler: [fastify.authenticate], schema: saveAttemptSchema }, attemptController.save);
+  fastify.get('/api/attempts/my', { preHandler: [fastify.authenticate] }, attemptController.getMy);
+  fastify.delete('/api/attempts/:id', { preHandler: [fastify.authenticate], schema: getByIdSchema }, attemptController.delete);
 
   // --- Notes Routes ---
   fastify.get('/api/notes/:quizId', { preHandler: [fastify.authenticate], schema: getNotesSchema }, noteController.getNotes);

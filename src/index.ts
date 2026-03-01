@@ -2,46 +2,46 @@
 import { serve } from 'bun';
 import index from './index.html';
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': 'http://localhost:5173',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Allow-Credentials': 'true',
+};
+
 const server = serve({
   // Enable development features when not in production 
-  // This includes console logging and hot module reloading (HMR) for a better development experience. 
-  // In development mode, the server will echo console logs from the browser to the server console, allowing you to see client-side logs in your terminal. 
-  // Additionally, HMR will enable hot reloading of the frontend code, so you can see changes in real-time without needing to refresh the browser manually.
   development: process.env.NODE_ENV !== 'production' && {
-    // Echo console logs from the browser to the server
     console: true,
-
-    // Enable browser hot reloading in development
-    // What is hmr? HMR stands for Hot Module Replacement, which is a feature that allows you to see changes in real-time without needing to refresh the browser manually. When you make changes to your frontend code, HMR will automatically update the relevant modules in the browser without requiring a full page reload. This can significantly speed up your development workflow by allowing you to see changes immediately as you work on your code.
-    hmr: true, // Hot Module Replacement (HMR) allows you to see changes in real-time without needing to refresh the browser manually. 
+    hmr: true, 
   },
 
-  routes: {
-    // Serve index.html for all unmatched routes.
-    '/*': index,
+  fetch(req) {
+    // Handle CORS preflight
+    if (req.method === 'OPTIONS') {
+      return new Response(null, { headers: corsHeaders, status: 204 });
+    }
 
-    '/api/hello': {
-      async GET(_req) {
-        return Response.json({
-          message: 'Hello, world!',
-          method: 'GET',
-        });
-      },
-      async PUT(_req) {
-        return Response.json({
-          message: 'Hello, world!',
-          method: 'PUT',
-        });
-      },
-    },
+    const url = new URL(req.url);
+    
+    // API Routes
+    if (url.pathname === '/api/hello') {
+      return Response.json({ message: 'Hello, world!', method: req.method }, { headers: corsHeaders });
+    }
 
-    '/api/hello/:name': async req => {
-      const name = req.params.name;
-      return Response.json({
-        message: `Hello, ${name}!`,
-      });
-    },
-  },
+    if (url.pathname.startsWith('/api/hello/')) {
+      const name = url.pathname.slice('/api/hello/'.length);
+      return Response.json({ message: `Hello, ${name}!` }, { headers: corsHeaders });
+    }
+
+    // Default to serving the index.html
+    return new Response(index, {
+      headers: {
+        'Content-Type': 'text/html',
+        ...corsHeaders,
+      },
+    });
+  }
 });
 
 console.log(`🚀 Server running at ${server.url}`);

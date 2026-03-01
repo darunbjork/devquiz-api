@@ -9,6 +9,16 @@ export const attemptRepository = {
     return { ...attempt, _id: result.insertedId };
   },
   async findById(id: string) {
-    return await collections.attempts.findOne({ _id: new ObjectId(id) });
+    return await collections.attempts.findOne<AttemptDoc>({ _id: new ObjectId(id) });
+  },
+  async findByUserId(userId: string) {
+    return await collections.attempts.find<AttemptDoc>({ userId: new ObjectId(userId) }).toArray();
+  },
+  async update(id: string, update: Partial<AttemptDoc>) {
+    await collections.attempts.updateOne({ _id: new ObjectId(id) }, { $set: update });
+    return await this.findById(id);
+  },
+  async delete(id: string) {
+    return await collections.attempts.deleteOne({ _id: new ObjectId(id) });
   }
 };

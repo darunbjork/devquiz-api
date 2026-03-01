@@ -8,6 +8,9 @@ export interface UserDoc {
   passwordHash: string;
   role: 'admin' | 'user';
   createdAt: Date;
+  settings: {
+    theme: 'light' | 'dark';
+  };
 }
 
 export interface QuizDoc {
@@ -26,6 +29,8 @@ export interface QuestionDoc {
   text: string;
   type: 'multiple_choice' | 'boolean';
   points: number;
+  options?: Array<{ text: string; isCorrect: boolean }>; // For multiple choice questions
+  correctAnswer?: string; // Stores the text of the correct answer
 }
 
 export interface AttemptDoc {
@@ -33,6 +38,7 @@ export interface AttemptDoc {
   quizId: ObjectId;
   userId: ObjectId;
   score?: number;
+  totalQuestions?: number;
   startTime: Date;
   endTime?: Date;
   status: 'in_progress' | 'completed';

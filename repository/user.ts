@@ -13,5 +13,9 @@ export const userRepository = {
   },
   async findById(id: string) {
     return await collections.users.findOne<UserDoc>({ _id: new ObjectId(id) });
+  },
+  async update(id: string, update: Partial<UserDoc>) {
+    await collections.users.updateOne({ _id: new ObjectId(id) }, { $set: update });
+    return await this.findById(id);
   }
 };

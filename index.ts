@@ -17,7 +17,11 @@ const start = async () => {
 
     // 2. Register CORS
     await fastify.register(cors, { 
-      origin: process.env.FRONTEND_URL || 'http://localhost:5173' 
+      origin: ['http://localhost:5173', 'http://127.0.0.1:5173'], // Explicitly allow frontend origins
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+      credentials: true,
+      optionsSuccessStatus: 204 // Standard for preflight success
     });
 
     // 3. Register Auth & Swagger
