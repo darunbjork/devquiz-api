@@ -1,3 +1,4 @@
+/* eslint-disable perfectionist/sort-objects */
 // Step 13: in concise and short without no academic jargon, set up a simple Bun server in index.ts that serves the frontend and provides a few API endpoints for testing. This will allow you to verify that your server is running correctly and can handle basic requests before you implement the full functionality of your quiz application. The server will serve the index.html file for all unmatched routes and provide simple JSON responses for specific API endpoints, such as '/api/hello' and '/api/hello/:name'. This setup will help you ensure that your development environment is properly configured and ready for building out the rest of your application features.
 import { serve } from 'bun';
 import index from './index.html';
@@ -35,7 +36,7 @@ const server = serve({
     }
 
     // Default to serving the index.html
-    return new Response(index, {
+    return new Response(index.toString(), {
       headers: {
         'Content-Type': 'text/html',
         ...corsHeaders,

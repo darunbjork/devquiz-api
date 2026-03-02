@@ -1,3 +1,4 @@
+/* eslint-disable perfectionist/sort-objects */
 import { collections } from '../db.ts';
 import type { QuestionDoc } from '../types/db.ts';
 import { ObjectId } from 'mongodb';

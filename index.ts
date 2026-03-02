@@ -1,3 +1,4 @@
+/* eslint-disable perfectionist/sort-objects */
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import swagger from '@fastify/swagger';

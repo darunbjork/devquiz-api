@@ -1,46 +1,48 @@
-export const transformQuiz = (quiz: any, questions: any[] = []) => {
+import { ObjectId } from 'mongodb';
+import type { QuizDoc, QuestionDoc, AttemptDoc, UserDoc } from '../types/db';
+export const transformQuiz = (quiz: QuizDoc, questions: QuestionDoc[] = []) => {
   return {
     ...quiz,
-    id: quiz._id?.toString(),
     _id: undefined,
     createdBy: quiz.createdBy?.toString(),
+    id: quiz._id?.toString(),
     questions: questions.map(q => {
-      const options = q.options?.map((opt: any) => typeof opt === 'string' ? opt : opt.text) || [];
-      const correctAnswerIndex = q.options?.findIndex((opt: any) => opt.isCorrect);
+      const options = q.options?.map((opt: { text: string; isCorrect: boolean }) => typeof opt === 'string' ? opt : opt.text) || [];
+      const correctAnswerIndex = q.options?.findIndex((opt: { text: string; isCorrect: boolean }) => opt.isCorrect);
       
       return {
         ...q,
-        id: q._id?.toString(),
         _id: undefined,
-        quizId: q.quizId?.toString(),
-        questionText: q.text,
-        question: q.text, // Backup for frontend
+        correctAnswerIndex: correctAnswerIndex !== -1 ? correctAnswerIndex : 0,
+        id: q._id?.toString(),
         options,
-        correctAnswerIndex: correctAnswerIndex !== -1 ? correctAnswerIndex : 0
+        question: q.text, // Backup for frontend
+        questionText: q.text,
+        quizId: q.quizId?.toString()
       };
     })
   };
 };
 
-export const transformAttempt = (attempt: any) => {
+export const transformAttempt = (attempt: AttemptDoc) => {
   return {
     ...attempt,
-    id: attempt._id?.toString(),
     _id: undefined,
-    quizId: attempt.quizId?.toString(),
-    userId: attempt.userId?.toString(),
-    answers: attempt.answers?.map((a: any) => ({
+    answers: attempt.answers?.map((a: { questionId: ObjectId; selectedOption?: string; userAnswer?: boolean; isCorrect: boolean }) => ({
       ...a,
       questionId: a.questionId?.toString()
-    }))
+    })),
+    id: attempt._id?.toString(),
+    quizId: attempt.quizId?.toString(),
+    userId: attempt.userId?.toString()
   };
 };
 
-export const transformUser = (user: any) => {
+export const transformUser = (user: UserDoc) => {
   if (!user) return null;
   return {
     ...user,
-    id: user._id?.toString(),
     _id: undefined,
+    id: user._id?.toString(),
   };
 };
