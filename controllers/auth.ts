@@ -53,5 +53,16 @@ export const authController = {
       return _reply.code(400).send({ message: 'User registration failed' });
     }
     return _reply.code(201).send({ message: 'User registered successfully', userId: user.id });
+  },
+
+  async updateUserRole(req: FastifyRequest<{ Params: { userId: string }; Body: { role: 'admin' | 'user' } }>, _reply: FastifyReply) {
+    const { userId } = req.params;
+    const { role } = req.body;
+    const updatedUser = await authService.updateUserRole(userId, role);
+    return { message: 'User role updated successfully', user: updatedUser };
+  },
+
+  async getAllUsers(req: FastifyRequest, _reply: FastifyReply) {
+    return await authService.getAllUsers();
   }
 };
