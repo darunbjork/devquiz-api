@@ -4,6 +4,7 @@ import { userRepository } from '../repository/user.ts';
 import { quizRepository } from '../repository/quiz.ts';
 import { attemptRepository } from '../repository/attempt.ts';
 import { questionRepository } from '../repository/question.ts';
+import { noteRepository } from '../repository/notes.ts';
 import { hashPassword, comparePassword } from '../utils/password.ts';
 import { ConflictError, UnauthorizedError, NotFoundError } from '../errors.ts';
 import type { RegisterBody, LoginBody } from '../types/http.ts';
