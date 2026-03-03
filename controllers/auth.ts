@@ -62,7 +62,7 @@ export const authController = {
     return { message: 'User role updated successfully', user: updatedUser };
   },
 
-  async getAllUsers(req: FastifyRequest, _reply: FastifyReply) {
+  async getAllUsers(_req: FastifyRequest, _reply: FastifyReply) {
     return await authService.getAllUsers();
   },
 

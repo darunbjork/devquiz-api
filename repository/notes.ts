@@ -9,14 +9,14 @@ export const noteRepository = {
     const result = await collections.notes.insertOne(note);
     return { ...note, _id: result.insertedId };
   },
+  async deleteManyByUserId(userId: string) {
+    const result = await collections.notes.deleteMany({ userId: new ObjectId(userId) });
+    return result.deletedCount;
+  },
   async findByUserAndQuiz(userId: string, quizId: string) {
     return await collections.notes.find({ 
       quizId: new ObjectId(quizId), 
       userId: new ObjectId(userId) 
     }).toArray();
-  },
-  async deleteManyByUserId(userId: string) {
-    const result = await collections.notes.deleteMany({ userId: new ObjectId(userId) });
-    return result.deletedCount;
   }
 };

@@ -8,6 +8,13 @@ export const userRepository = {
     const result = await collections.users.insertOne(user);
     return { ...user, _id: result.insertedId };
   },
+  async delete(userId: string) {
+    const result = await collections.users.deleteOne({ _id: new ObjectId(userId) });
+    return result.deletedCount === 1;
+  },
+  async findAll() {
+    return await collections.users.find<UserDoc>({}).toArray();
+  },
   async findByEmail(email: string) {
     return await collections.users.findOne<UserDoc>({ email });
   },
@@ -17,12 +24,5 @@ export const userRepository = {
   async update(id: string, update: Partial<UserDoc>) {
     await collections.users.updateOne({ _id: new ObjectId(id) }, { $set: update });
     return await this.findById(id);
-  },
-  async findAll() {
-    return await collections.users.find<UserDoc>({}).toArray();
-  },
-  async delete(userId: string) {
-    const result = await collections.users.deleteOne({ _id: new ObjectId(userId) });
-    return result.deletedCount === 1;
   }
 };
