@@ -12,6 +12,9 @@ import { transformQuiz, transformAttempt, transformUser } from '../utils/transfo
 
 import type { UserDoc } from '../types/db.ts';
 
+import type { FastifyJWT } from '@fastify/jwt';
+import type { JWTPayload } from '../types/auth.ts';
+
 export const authService = {
   async login(data: LoginBody) {
     const user = await userRepository.findByEmail(data.email);
@@ -19,6 +22,49 @@ export const authService = {
       throw new UnauthorizedError('Invalid email or password');
     }
     return transformUser(user);
+  },
+
+  async refreshToken(refreshToken: string, jwt: FastifyJWT, signJwt: (payload: JWTPayload, options: { expiresIn: string }) => Promise<string>) {
+    // 1. Verify the refresh token (it's a JWT)
+    let payload: JWTPayload;
+    try {
+      payload = jwt.verify(refreshToken) as JWTPayload;
+    } catch (error) {
+      throw new UnauthorizedError('Invalid refresh token');
+    }
+
+    // 2. Look up user by hashed refresh token in DB
+    const user = await userRepository.findById(payload.sub); // Use payload.sub from verified token
+    if (!user || !user.refreshTokenHash) {
+      throw new UnauthorizedError('Refresh token not found or user not active');
+    }
+
+    // 3. Compare the provided refresh token with the hashed one in the DB
+    const isMatch = await comparePassword(user.refreshTokenHash, refreshToken);
+    if (!isMatch) {
+      // If refresh token doesn't match, invalidate it (prevent reuse of compromised tokens)
+      await userRepository.updateRefreshTokenHash(user._id!.toString(), null);
+      throw new UnauthorizedError('Invalid refresh token');
+    }
+
+    // 4. Generate new access and refresh tokens
+    const newAccessToken = await signJwt(
+      { sub: user._id!.toString(), role: user.role, email: user.email },
+      { expiresIn: '15m' }
+    );
+    const newRefreshToken = await signJwt(
+      { sub: user._id!.toString(), role: user.role, email: user.email },
+      { expiresIn: '7d' }
+    );
+
+    // 5. Store new hashed refresh token in DB
+    const hashedNewRefreshToken = await hashPassword(newRefreshToken);
+    await userRepository.updateRefreshTokenHash(user._id!.toString(), hashedNewRefreshToken);
+
+    return {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+    };
   },
 
   async register(data: RegisterBody) {
