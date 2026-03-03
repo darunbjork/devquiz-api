@@ -163,6 +163,16 @@ const getByIdSchema: FastifySchema = {
   },
 };
 
+const updateRoleSchema: FastifySchema = {
+  body: {
+    properties: {
+      role: { enum: ['admin', 'user'], type: 'string' },
+    },
+    required: ['role'],
+    type: 'object',
+  },
+};
+
 export default async function routes(fastify: FastifyInstance) {
   // --- Auth Routes ---
   fastify.post('/api/auth/register', { schema: registerSchema }, authController.register);
@@ -170,6 +180,8 @@ export default async function routes(fastify: FastifyInstance) {
   fastify.get('/api/auth/profile', { preHandler: [fastify.authenticate] }, authController.profile);
   fastify.get('/api/auth/me', { preHandler: [fastify.authenticate] }, authController.getMe);
   fastify.patch('/api/auth/profile', { preHandler: [fastify.authenticate], schema: updateProfileSchema }, authController.updateProfile);
+  fastify.put('/api/admin/users/:userId/role', { preHandler: [fastify.authenticate, fastify.adminAuthenticate], schema: updateRoleSchema }, authController.updateUserRole);
+  fastify.get('/api/admin/users', { preHandler: [fastify.authenticate, fastify.adminAuthenticate] }, authController.getAllUsers);
 
   // --- Quiz Routes ---
   fastify.get('/api/quizzes', quizController.getAll);
