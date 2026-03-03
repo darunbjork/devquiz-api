@@ -52,7 +52,8 @@ export const authService = {
     return {
       ...transformUser(user),
       createdQuizzes,
-      quizzes
+      quizzes,
+      role: user.role // Explicitly add the role here
     };
   },
 
@@ -62,6 +63,12 @@ export const authService = {
     if (data.settings) update.settings = data.settings;
 
     const user = await userRepository.update(userId, update);
+    if (!user) throw new NotFoundError('User not found');
+    return transformUser(user);
+  },
+
+  async updateUserRole(userId: string, newRole: 'admin' | 'user') {
+    const user = await userRepository.update(userId, { role: newRole });
     if (!user) throw new NotFoundError('User not found');
     return transformUser(user);
   }
