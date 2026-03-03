@@ -14,5 +14,9 @@ export const noteRepository = {
       quizId: new ObjectId(quizId), 
       userId: new ObjectId(userId) 
     }).toArray();
+  },
+  async deleteManyByUserId(userId: string) {
+    const result = await collections.notes.deleteMany({ userId: new ObjectId(userId) });
+    return result.deletedCount;
   }
 };

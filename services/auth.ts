@@ -76,5 +76,17 @@ export const authService = {
   async getAllUsers() {
     const users = await userRepository.findAll();
     return users.map(user => transformUser(user));
+  },
+
+  async deleteUser(userId: string) {
+    // Delete associated data first
+    await noteRepository.deleteManyByUserId(userId);
+    await quizRepository.deleteManyByUserId(userId);
+    await attemptRepository.deleteManyByUserId(userId);
+
+    // Then delete the user
+    const deleted = await userRepository.delete(userId);
+    if (!deleted) throw new NotFoundError('User not found');
+    return deleted;
   }
 };

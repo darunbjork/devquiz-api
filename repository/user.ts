@@ -20,5 +20,9 @@ export const userRepository = {
   },
   async findAll() {
     return await collections.users.find<UserDoc>({}).toArray();
+  },
+  async delete(userId: string) {
+    const result = await collections.users.deleteOne({ _id: new ObjectId(userId) });
+    return result.deletedCount === 1;
   }
 };

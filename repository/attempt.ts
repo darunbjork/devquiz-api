@@ -21,5 +21,9 @@ export const attemptRepository = {
   },
   async delete(id: string) {
     return await collections.attempts.deleteOne({ _id: new ObjectId(id) });
+  },
+  async deleteManyByUserId(userId: string) {
+    const result = await collections.attempts.deleteMany({ userId: new ObjectId(userId) });
+    return result.deletedCount;
   }
 };

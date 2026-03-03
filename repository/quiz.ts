@@ -27,5 +27,9 @@ export const quizRepository = {
   },
   async delete(id: string) {
     return await collections.quizzes.deleteOne({ _id: new ObjectId(id) });
+  },
+  async deleteManyByUserId(userId: string) {
+    const result = await collections.quizzes.deleteMany({ createdBy: new ObjectId(userId) });
+    return result.deletedCount;
   }
 };

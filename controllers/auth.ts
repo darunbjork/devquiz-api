@@ -64,5 +64,10 @@ export const authController = {
 
   async getAllUsers(req: FastifyRequest, _reply: FastifyReply) {
     return await authService.getAllUsers();
+  },
+
+  async deleteUser(req: FastifyRequest<{ Params: { userId: string } }>, _reply: FastifyReply) {
+    await authService.deleteUser(req.params.userId);
+    return { message: 'User deleted successfully' };
   }
 };

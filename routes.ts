@@ -182,6 +182,7 @@ export default async function routes(fastify: FastifyInstance) {
   fastify.patch('/api/auth/profile', { preHandler: [fastify.authenticate], schema: updateProfileSchema }, authController.updateProfile);
   fastify.put('/api/admin/users/:userId/role', { preHandler: [fastify.authenticate, fastify.adminAuthenticate], schema: updateRoleSchema }, authController.updateUserRole);
   fastify.get('/api/admin/users', { preHandler: [fastify.authenticate, fastify.adminAuthenticate] }, authController.getAllUsers);
+  fastify.delete('/api/admin/users/:userId', { preHandler: [fastify.authenticate, fastify.adminAuthenticate], schema: getByIdSchema }, authController.deleteUser);
 
   // --- Quiz Routes ---
   fastify.get('/api/quizzes', quizController.getAll);
