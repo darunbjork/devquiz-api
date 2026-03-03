@@ -71,5 +71,10 @@ export const authService = {
     const user = await userRepository.update(userId, { role: newRole });
     if (!user) throw new NotFoundError('User not found');
     return transformUser(user);
+  },
+
+  async getAllUsers() {
+    const users = await userRepository.findAll();
+    return users.map(user => transformUser(user));
   }
 };
