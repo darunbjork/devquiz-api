@@ -1,7 +1,7 @@
 // scripts/createInitialAdmin.ts
 import { MongoClient, ObjectId } from 'mongodb';
 import { hashPassword } from '../utils/password.ts';
-import 'dotenv/config'; // Load environment variables from .env file
+import * as dotenv from 'dotenv'; dotenv.config(); // Load environment variables from .env file
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/devquiz';
 const DB_NAME = process.env.DB_NAME || 'devquiz';
