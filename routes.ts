@@ -187,6 +187,7 @@ export default async function routes(fastify: FastifyInstance) {
   // --- Auth Routes ---
   fastify.post('/api/auth/register', { schema: registerSchema }, authController.register);
   fastify.post('/api/auth/login', { schema: loginSchema }, authController.login);
+  fastify.post('/api/auth/refresh', authController.refreshToken);
   fastify.get('/api/auth/profile', { preHandler: [fastify.authenticate] }, authController.profile);
   fastify.get('/api/auth/me', { preHandler: [fastify.authenticate] }, authController.getMe);
   fastify.patch('/api/auth/profile', { preHandler: [fastify.authenticate], schema: updateProfileSchema }, authController.updateProfile);
