@@ -91,15 +91,32 @@ export const authController = {
       throw new UnauthorizedError('No refresh token provided');
     }
 
-    const { accessToken, refreshToken: newRefreshToken } = await authService.refreshToken(refreshToken, req.jwt, _reply.jwtSign);
+    // Basic check to ensure the refresh token looks like a JWT before passing it to service
+    // This helps catch malformed cookie values that are not even JWTs
+    if (typeof refreshToken !== 'string' || refreshToken.split('.').length !== 3) {
+      throw new UnauthorizedError('Malformed refresh token');
+    }
 
-    _reply.setCookie('refreshToken', newRefreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      path: '/',
-      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    });
+    try {
+      const { accessToken, refreshToken: newRefreshToken } = await authService.refreshToken(refreshToken, req.jwt, _reply.jwtSign);
 
-    return { token: accessToken };
+      _reply.setCookie('refreshToken', newRefreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        path: '/',
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      });
+
+      return { token: accessToken };
+    } catch (error) {
+      // Catch any error that might not be an UnauthorizedError (though it should be from authService)
+      // and re-throw as UnauthorizedError to guarantee 401 status.
+      if (error instanceof UnauthorizedError) {
+        throw error;
+      }
+      // Log the unexpected error if it's not an UnauthorizedError
+      req.log.error(error, 'Unexpected error during refresh token process');
+      throw new UnauthorizedError('Failed to refresh token due to unexpected error');
+    }
   }
 };
