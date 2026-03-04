@@ -29,7 +29,7 @@ export const authService = {
     let payload: JWTPayload;
     try {
       payload = jwt.verify(refreshToken) as JWTPayload;
-    } catch (error) {
+    } catch (_error) {
       throw new UnauthorizedError('Invalid refresh token');
     }
 

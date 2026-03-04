@@ -1,6 +1,7 @@
 /* eslint-disable perfectionist/sort-objects */
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
+import cookie from '@fastify/cookie'; 
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 import { connectMongo } from './db.ts';
@@ -24,6 +25,9 @@ const start = async () => {
       credentials: true,
       optionsSuccessStatus: 204 // Standard for preflight success
     });
+
+    // 2.5 Register Cookie plugin
+    await fastify.register(cookie);
 
     // 3. Register Auth & Swagger
     await fastify.register(authPlugin);
