@@ -12,7 +12,7 @@ import { transformQuiz, transformAttempt, transformUser } from '../utils/transfo
 
 import type { UserDoc } from '../types/db.ts';
 
-import type { FastifyJWT } from '@fastify/jwt';
+import type { JWT } from '@fastify/jwt';
 import type { JWTPayload } from '../types/auth.ts';
 
 export const authService = {
@@ -24,7 +24,7 @@ export const authService = {
     return transformUser(user);
   },
 
-  async refreshToken(refreshToken: string, jwt: FastifyJWT, signJwt: (payload: JWTPayload, options: { expiresIn: string }) => Promise<string>) {
+  async refreshToken(refreshToken: string, jwt: JWT, signJwt: (payload: JWTPayload, options: { expiresIn: string }) => Promise<string>) {
     // 1. Verify the refresh token (it's a JWT)
     let payload: JWTPayload;
     try {

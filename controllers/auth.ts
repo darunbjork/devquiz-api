@@ -83,5 +83,23 @@ export const authController = {
   async deleteUser(req: FastifyRequest<{ Params: { userId: string } }>, _reply: FastifyReply) {
     await authService.deleteUser(req.params.userId);
     return { message: 'User deleted successfully' };
+  },
+
+  async refreshToken(req: FastifyRequest, _reply: FastifyReply) {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+      throw new UnauthorizedError('No refresh token provided');
+    }
+
+    const { accessToken, refreshToken: newRefreshToken } = await authService.refreshToken(refreshToken, req.jwt, _reply.jwtSign);
+
+    _reply.setCookie('refreshToken', newRefreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    });
+
+    return { token: accessToken };
   }
 };

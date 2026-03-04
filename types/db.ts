@@ -11,6 +11,7 @@ export interface UserDoc {
   settings: {
     theme: 'light' | 'dark';
   };
+  refreshTokenHash?: string; // Add this line
 }
 
 export interface QuizDoc {
