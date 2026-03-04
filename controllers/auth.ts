@@ -33,7 +33,7 @@ export const authController = {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // Use secure in production
       path: '/',
-      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+      maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
     });
 
     return {
