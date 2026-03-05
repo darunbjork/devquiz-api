@@ -8,7 +8,7 @@ import { connectMongo } from './db.ts';
 import authPlugin from './auth.ts';
 import routes from './routes.ts';
 import logger from './logger.ts';
-import { AppError } from './errors.ts';
+import errorHandlersPlugin from './plugins/errorHandlers.ts';
 
 const fastify = Fastify({ logger: false });
 
@@ -39,14 +39,8 @@ const start = async () => {
     // 4. Register Routes
     await fastify.register(routes);
 
-    // 5. Global Error Handler
-    fastify.setErrorHandler((error, _request, reply) => {
-      if (error instanceof AppError) {
-        return reply.status(error.statusCode).send({ message: error.message });
-      }
-      logger.error(error);
-      return reply.status(500).send({ message: 'Internal Server Error' });
-    });
+    // 5. Register Global Error Handler Plugin
+    await fastify.register(errorHandlersPlugin);
 
     // 6. Start Listening
     const port = Number(process.env.PORT) || 3000;
