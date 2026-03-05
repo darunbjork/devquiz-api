@@ -6,15 +6,28 @@ import { userRepository } from '../repository/user.ts';
 import { hashPassword } from '../utils/password.ts';
 import type { RegisterBody, LoginBody } from '../types/http.ts';
 import type { JWTPayload } from '../types/auth.ts';
+import { UnauthorizedError } from '../errors.ts';
+
+// Define this interface based on what transformUser returns in utils/transform.ts
+interface TransformedUser {
+  id: string;
+  email: string;
+  role: 'admin' | 'user';
+  settings: {
+    theme: 'light' | 'dark';
+  };
+  username: string;
+  // Add other properties if transformUser returns them and they are used
+}
 
 export const authController = {
   async login(req: FastifyRequest<{ Body: LoginBody }>, _reply: FastifyReply) {
-    const user = await authService.login(req.body);
+    const user: TransformedUser = (await authService.login(req.body))!;
     
     const payload: JWTPayload = { 
-      email: user?.email ?? '', 
-      role: user?.role ?? 'user', 
-      sub: user?.id ?? '' 
+      email: user.email, // Now directly accessible as string
+      role: user.role, 
+      sub: user.id 
     };
     
     const token = await _reply.jwtSign(payload, { expiresIn: '15m' });

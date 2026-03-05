@@ -39,10 +39,13 @@ export const transformAttempt = (attempt: AttemptDoc) => {
 };
 
 export const transformUser = (user: UserDoc) => {
-  if (!user) return null;
   return {
     ...user,
     _id: undefined,
-    id: user._id?.toString(),
+    email: user.email, // Explicitly include email to ensure its presence
+    id: user._id!.toString(), // Assert _id is not null here
+    role: user.role, // Explicitly include role
+    settings: user.settings, // Explicitly include settings
+    username: user.username, // Explicitly include username
   };
 };
