@@ -3,13 +3,14 @@ services:
     build: .
     ports:
       - "3000:3000"
+    env_file:
+      - .env
     environment:
       - MONGODB_URL=mongodb://mongo:27017/devquiz
-      - JWT_SECRET_KEY=dev-secret-key
-      - JWT_REFRESH_SECRET=dev-refresh-secret
       - NODE_ENV=development
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
 
   mongo:
     image: mongo:7
@@ -17,6 +18,11 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   mongo_data:

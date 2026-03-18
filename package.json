@@ -4,17 +4,17 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "bun --hot index.ts",
-    "backend": "bun --hot index.ts",
-    "frontend": "bun --hot src/index.ts",
-    "build": "bun build ./src/index.html --outdir=dist --sourcemap --target=browser --minify --define:process.env.NODE_ENV='\"production\"' --env='BUN_PUBLIC_*'",
-    "start": "NODE_ENV=production bun index.ts",
-    "create-admin": "bun run scripts/createInitialAdmin.ts"
+    "dev": "bun --hot src/index.ts",
+    "backend": "bun --hot src/index.ts",
+    "start": "NODE_ENV=production bun src/index.ts",
+    "create-admin": "bun run src/scripts/createInitialAdmin.ts"
   },
   "dependencies": {
     "@fastify/cookie": "^11.0.2",
     "@fastify/cors": "^11.2.0",
+    "@fastify/helmet": "^13.0.2",
     "@fastify/jwt": "^10.0.0",
+    "@fastify/rate-limit": "^10.3.0",
     "@fastify/swagger": "^9.7.0",
     "@fastify/swagger-ui": "^5.2.5",
     "bcryptjs": "^3.0.3",
