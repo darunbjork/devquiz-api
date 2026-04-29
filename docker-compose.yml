@@ -1,28 +1,40 @@
+version: "3.8"
+
 services:
   api:
-    build: .
+    image: ghcr.io/YOUR_GITHUB_USERNAME/devquiz-api:latest # change to your image
+    restart: unless-stopped
     ports:
       - "3000:3000"
-    env_file:
-      - .env
     environment:
+      - NODE_ENV=production
+      - PORT=3000
       - MONGODB_URL=mongodb://mongo:27017/devquiz
-      - NODE_ENV=development
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
     depends_on:
       mongo:
         condition: service_healthy
+    networks:
+      - devquiz_net
 
   mongo:
     image: mongo:7
-    ports:
-      - "27017:27017"
+    restart: unless-stopped
     volumes:
       - mongo_data:/data/db
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - devquiz_net
 
 volumes:
   mongo_data:
+
+networks:
+  devquiz_net:

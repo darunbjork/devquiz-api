@@ -1,4 +1,11 @@
-.env
-.env.local
 node_modules
-.git
+.env
+.env.*
+logs
+dist
+build
+*.log
+*.tmp
+tmp
+__pycache__
+*.pyc
