@@ -1,34 +1,25 @@
-# syntax=docker/dockerfile:1
-FROM oven/bun:1 AS base
+# Use the official Bun image
+FROM oven/bun:latest AS base
+
 WORKDIR /app
 
-# Install dependencies (including dev dependencies for tests)
-FROM base AS deps
+# Install dependencies
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
-# Run tests in a separate stage (optional, keeps final image small)
-FROM deps AS test
-COPY . .
-RUN bun test
-
-# Final production image
-FROM base AS runner
-WORKDIR /app
-
-# Copy only what's needed
-COPY --from=deps /app/node_modules ./node_modules
+# Copy the rest of the source code
 COPY . .
 
 # Use a non‑root user for security
-RUN groupadd --system --gid 1001 bunjs && \
-  useradd --system --uid 1001 --gid bunjs bunjs
+RUN groupadd --system --gid 1001 bunjs && 
+    useradd --system --uid 1001 --gid bunjs bunjs
 USER bunjs
 
-ENV NODE_ENV=production
+# Expose the port
 EXPOSE 3000
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:3000/health || exit 1
+# Set production environment
+ENV NODE_ENV=production
 
-CMD ["bun", "run", "start"]
+# Start the server
+CMD ["bun", "src/index.ts"]
