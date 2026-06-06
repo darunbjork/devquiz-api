@@ -54,6 +54,11 @@ const start = async () => {
 
     await fastify.register(routes);
 
+    // Redirect root to docs
+    fastify.get('/', async (_request, reply) => {
+      return reply.redirect('/docs');
+    });
+
     await fastify.register(errorHandlersPlugin);
 
     const port = Number(process.env.PORT) || 3001;
