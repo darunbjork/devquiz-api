@@ -49,7 +49,7 @@ const start = async () => {
 
     await fastify.register(errorHandlersPlugin);
 
-    const port = Number(process.env.PORT) || 3000;
+    const port = Number(process.env.PORT) || 3001;
     await fastify.listen({ host: '0.0.0.0', port });
     console.log(`🚀 Server ready at http://localhost:${port}`);
     console.log(`📖 Docs available at http://localhost:${port}/docs`);
