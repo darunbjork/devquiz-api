@@ -18,8 +18,15 @@ const start = async () => {
   try {
     await connectMongo();
 
+    const allowedOrigins = [
+      'http://localhost:5173',
+      'http://127.0.0.1:5173',
+      'http://localhost:5174',
+      ...(process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : []),
+    ];
+
     await fastify.register(cors, {
-      origin: ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:5174'],
+      origin: allowedOrigins,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],
       credentials: true,
