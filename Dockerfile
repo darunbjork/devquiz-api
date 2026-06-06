@@ -1,19 +1,13 @@
-# Use the official Bun image
-FROM oven/bun:latest AS base
+FROM oven/bun:latest
 
 WORKDIR /app
 
-# Install dependencies
+# Copy package files and install dependencies
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
 # Copy the rest of the source code
 COPY . .
-
-# Use a non‑root user for security
-RUN groupadd --system --gid 1001 bunjs && 
-    useradd --system --uid 1001 --gid bunjs bunjs
-USER bunjs
 
 # Expose the port
 EXPOSE 3000
