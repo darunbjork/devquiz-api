@@ -21,8 +21,8 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Use a non‑root user for security
-RUN addgroup --system --gid 1001 bunjs && \
-  adduser --system --uid 1001 bunjs
+RUN groupadd --system --gid 1001 bunjs && \
+  useradd --system --uid 1001 --gid bunjs bunjs
 USER bunjs
 
 ENV NODE_ENV=production
