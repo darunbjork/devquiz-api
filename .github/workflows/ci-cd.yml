@@ -77,14 +77,5 @@ jobs:
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' ||
       github.ref == 'refs/heads/master')
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.PRIVATE_KEY }}
-          script: |
-            cd /opt/devquiz-api
-            docker-compose pull
-            docker-compose up -d --force-recreate
-            docker image prune -f
+      - name: Workflow completed
+        run: echo "Build and push successful. Deployment is handled via Render."
