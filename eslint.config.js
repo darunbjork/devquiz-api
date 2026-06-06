@@ -5,6 +5,11 @@ import perfectionist from 'eslint-plugin-perfectionist';
 
 export default [
   {
+    // Ignore build output, node_modules, and config files to avoid parsing issues
+    ignores: ['dist/', 'node_modules/', 'src/frontend.tsx', 'src/APITester.tsx', 'eslint.config.js'],
+  },
+  {
+    // Base configuration (no type checking)
     languageOptions: {
       globals: globals.node,
       parser: tseslint.parser,
@@ -13,8 +18,16 @@ export default [
           jsx: true,
         },
         ecmaVersion: 'latest',
-        project: './tsconfig.json',
         sourceType: 'module',
+      },
+    },
+  },
+  {
+    // TypeScript configuration (with type checking for src files)
+    files: ['src/**/*.{ts,tsx}'],
+    languageOptions: {
+      parserOptions: {
+        project: './tsconfig.json',
       },
     },
   },
@@ -75,9 +88,5 @@ export default [
     rules: {
       '@typescript-eslint/no-unused-vars': 'off',
     },
-  },
-  {
-    // Ignore build output and node_modules
-    ignores: ['dist/', 'node_modules/', 'src/frontend.tsx', 'src/APITester.tsx'],
   },
 ];
