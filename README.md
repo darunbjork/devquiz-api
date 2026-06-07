@@ -1,5 +1,15 @@
 ---
 
+## Key Libraries
+
+- **Fastify**: A high-performance, low-overhead web framework for Node.js.
+- **MongoDB**: A scalable NoSQL database.
+- **Bcrypt.js**: A library for hashing passwords securely.
+- **Winston**: A versatile logging library for Node.js.
+- **Zod**: A TypeScript-first schema declaration and validation library.
+
+---
+
 ## Production Deployment
 The DevQuiz API is deployed on Render:
 [API Documentation](https://devquiz-api-nblo.onrender.com/docs)
