@@ -1,6 +1,3 @@
-https://github.com/darunbjork/devquiz-api
-
-
 ---
 
 ## Production Deployment
