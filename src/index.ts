@@ -18,12 +18,9 @@ const start = async () => {
   try {
     await connectMongo();
 
-    const allowedOrigins = [
-      'http://localhost:5173',
-      'http://127.0.0.1:5173',
-      'http://localhost:5174',
-      ...(process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : []),
-    ];
+    const allowedOrigins = process.env.CORS_ORIGINS
+      ? process.env.CORS_ORIGINS.split(',')
+      : ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:5174', 'https://dev-quiz-2stl.vercel.app'];
 
     await fastify.register(cors, {
       origin: allowedOrigins,
