@@ -34,7 +34,7 @@ interface GeneratedQuiz {
 }
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent';
 
 const sanitizeAiResponse = (text: string): string => {
   text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '');
