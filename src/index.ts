@@ -18,12 +18,40 @@ const start = async () => {
   try {
     await connectMongo();
 
-    const allowedOrigins = process.env.CORS_ORIGINS
-      ? process.env.CORS_ORIGINS.split(',')
-      : ['http://localhost:5173', 'http://127.0.0.1:5173', 'http://localhost:5174', 'https://dev-quiz-2stl.vercel.app'];
+    // CORS_ORIGINS: comma-separated exact origins (authoritative when set).
+    // Fallback allows local dev, both production frontends, and Vercel previews.
+    const envOrigins = process.env.CORS_ORIGINS
+      ?.split(',')
+      .map((origin) => origin.trim())
+      .filter(Boolean);
+
+    const exactOrigins = envOrigins ?? [
+      'http://localhost:5173',
+      'http://127.0.0.1:5173',
+      'http://localhost:5174',
+      'https://dev-quiz-2stl.vercel.app',
+      'https://dev-quiz-silk.vercel.app',
+    ];
+
+    // Match any Vercel preview for this project (dev-quiz-<slug>.vercel.app).
+    // Set CORS_ALLOW_VERCEL_PREVIEWS=false to disable.
+    const allowVercelPreviews = process.env.CORS_ALLOW_VERCEL_PREVIEWS !== 'false';
+    const vercelPreviewPattern = /^https:\/\/dev-quiz-[a-z0-9-]+\.vercel\.app$/;
 
     await fastify.register(cors, {
-      origin: allowedOrigins,
+      origin: (origin, callback) => {
+        // Allow non-browser / same-origin requests (curl, server-to-server)
+        if (!origin) {
+          callback(null, true);
+          return;
+        }
+
+        const allowed =
+          exactOrigins.includes(origin) ||
+          (allowVercelPreviews && vercelPreviewPattern.test(origin));
+
+        callback(null, allowed);
+      },
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],
       credentials: true,
